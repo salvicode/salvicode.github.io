@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ИИ-йог — Salvicode</title>
+<meta name="description" content="Настраиваю Claude и ИИ-агентов под ваши задачи: для разработчиков, креативщиков и малого бизнеса. Бишкек и онлайн.">
+<meta property="og:title" content="ИИ-йог — настраиваю тело и нейросети">
+<meta property="og:description" content="Установка и настройка Claude, ИИ-агенты, MCP-серверы, автоматизация рутины. Бишкек и онлайн.">
+<meta property="og:image" content="https://salvicode.github.io/img/hero.jpg">
+<link rel="icon" href="img/fav/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #242424;
+    --paper: #f7f3ee;
+    --card: #ffffff;
+    --muted: #6b6560;
+    --line: #e4ddd4;
+    --copper: #CC9E7C;
+    --red: #C24343;
+    --red-hover: #D24343;
+    --dark-bg: #242424;
+    --dark-ink: #f2ece5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eee7df;
+      --paper: #1c1b1a;
+      --card: #262422;
+      --muted: #a69e95;
+      --line: #3a3633;
+      --dark-bg: #141312;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.65 Montserrat, system-ui, sans-serif;
+  }
+  h1, h2, h3 { font-family: Domine, Georgia, serif; line-height: 1.2; margin: 0 0 .6em; }
+  h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); }
+  h3 { font-size: 1.25rem; }
+  p { margin: 0 0 1em; }
+  a { color: var(--red); }
+  a:hover { color: var(--red-hover); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 80px 0; }
+  .eyebrow {
+    font-size: .8rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--copper); font-weight: 700; margin-bottom: .8em;
+  }
+
+  /* nav */
+  nav { background: var(--dark-bg); color: var(--dark-ink); position: sticky; top: 0; z-index: 10; }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--copper); text-decoration: none; font-family: Domine, serif; font-size: 1.3rem; }
+  .brand img { width: 36px; height: 36px; }
+  .brand:hover { color: #DD9C7C; }
+  nav ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; font-size: .9rem; }
+  nav ul a { color: var(--dark-ink); text-decoration: none; opacity: .85; }
+  nav ul a:hover { color: var(--copper); opacity: 1; }
+  @media (max-width: 720px) {
+    nav .wrap { flex-direction: column; align-items: flex-start; height: auto; gap: 4px; padding-top: 10px; padding-bottom: 8px; }
+    .brand { font-size: 1.15rem; }
+    nav ul { gap: 18px; font-size: .85rem; overflow-x: auto; max-width: 100%; white-space: nowrap; padding-bottom: 2px; }
+  }
+  section[id], header[id] { scroll-margin-top: 96px; }
+
+  /* buttons */
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 24px; font-weight: 700; font-size: .95rem; text-decoration: none;
+    border: 2px solid var(--red); background: var(--red); color: #fff;
+  }
+  .btn:hover { background: var(--red-hover); border-color: var(--red-hover); color: #fff; }
+  .btn.ghost { background: transparent; color: inherit; border-color: currentColor; }
+  .btn.ghost:hover { color: var(--copper); }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  /* hero */
+  .hero { background: var(--dark-bg); color: var(--dark-ink); padding: 72px 0 88px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.2fr .8fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(2.2rem, 5.5vw, 3.6rem); }
+  .hero h1 em { font-style: normal; color: var(--copper); }
+  .hero .lead { font-size: 1.15rem; opacity: .9; max-width: 34em; margin-bottom: 1.8em; }
+  .photo {
+    position: relative; aspect-ratio: 4 / 5; background: #333 center / cover no-repeat;
+    border: 1px solid #444;
+  }
+  .photo { box-shadow: 14px 14px 0 var(--copper); }
+  .photo .tag {
+    position: absolute; left: 0; bottom: 0; background: var(--red); color: #fff;
+    padding: 6px 12px; font-size: .8rem; font-weight: 700; letter-spacing: .05em;
+  }
+  @media (max-width: 820px) {
+    .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+    .photo { max-width: 360px; }
+  }
+
+  /* about */
+  .about .wrap { display: grid; grid-template-columns: 380px 1fr; gap: 48px; align-items: start; }
+  .about-photo { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 60% center; box-shadow: 14px 14px 0 var(--copper); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 28px; }
+  .fact { border-left: 3px solid var(--copper); padding: 4px 0 4px 14px; }
+  .fact b { display: block; font-family: Domine, serif; font-size: 1.05rem; }
+  .fact span { color: var(--muted); font-size: .9rem; }
+  @media (max-width: 720px) { .about .wrap { grid-template-columns: 1fr; gap: 24px; } .about-photo { max-width: 360px; } }
+
+  /* cards */
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); padding: 32px 28px; display: flex; flex-direction: column; }
+  .card ul { padding-left: 1.1em; margin: 0 0 1em; }
+  .card li { margin-bottom: .35em; }
+  .card .who { color: var(--muted); font-size: .92rem; }
+  .alt { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .alt .card { background: var(--paper); }
+
+  /* pricing */
+  .price { font-family: Domine, serif; font-size: 1.9rem; color: var(--red); margin: .2em 0 .1em; }
+  .price small { font-size: .95rem; color: var(--muted); font-family: Montserrat, sans-serif; }
+  .meta { color: var(--muted); font-size: .9rem; margin-bottom: 1.2em; }
+  .card.featured { border: 2px solid var(--copper); position: relative; }
+  .card.featured::before {
+    content: "Рекомендую"; position: absolute; top: -13px; left: 24px;
+    background: var(--copper); color: #242424; font-size: .75rem; font-weight: 700; padding: 3px 10px;
+  }
+  .card .btn { margin-top: auto; align-self: flex-start; }
+  .note { color: var(--muted); font-size: .9rem; margin-top: 24px; }
+
+  /* cases */
+  .case { border-top: 3px solid var(--red); }
+  .case .label { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--copper); margin-bottom: .6em; }
+  .case.soon { border-top-color: var(--line); }
+  .case.wide { grid-column: 1 / -1; border-top-color: var(--copper); }
+  .case.wide b { color: var(--red); }
+
+  /* steps */
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .step { counter-increment: s; }
+  .step::before { content: counter(s); font-family: Domine, serif; font-size: 2.4rem; color: var(--copper); display: block; line-height: 1; margin-bottom: 10px; }
+  @media (max-width: 720px) { .steps { grid-template-columns: 1fr; } }
+
+  /* cta + footer */
+  .cta { background: var(--dark-bg); color: var(--dark-ink); text-align: center; }
+  .cta .btns { justify-content: center; }
+  .cta p { opacity: .85; max-width: 34em; margin: 0 auto 1.8em; }
+  footer { background: var(--dark-bg); color: #8a837c; font-size: .85rem; padding: 24px 0; border-top: 1px solid #333; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  footer a { color: #8a837c; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/logo.png" alt="">Salvicode</a>
+    <ul>
+      <li><a href="#directions">Направления</a></li>
+      <li><a href="#packages">Пакеты</a></li>
+      <li><a href="#cases">Кейсы</a></li>
+      <li><a href="#contact">Связаться</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">ИИ-йог · ИИ-интегратор</div>
+      <h1>Настраиваю тело <em>и&nbsp;нейросети</em></h1>
+      <p class="lead">Ставлю и настраиваю Claude под ваши задачи, чтобы ИИ правда снимал с вас рутину. Работаю с разработчиками, креативщиками и малым бизнесом в Бишкеке и онлайн.</p>
+      <div class="btns">
+        <a class="btn" href="https://t.me/siryogakg" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M9.8 15.6 9.4 20c.6 0 .9-.3 1.2-.6l2.9-2.7 6 4.4c1.1.6 1.9.3 2.2-1L24 3.6c.4-1.6-.6-2.3-1.7-1.9L1 9.9c-1.5.6-1.5 1.5-.3 1.9l5.8 1.8L19.9 5c.6-.4 1.2-.2.7.3z"/></svg>
+          Написать в Telegram
+        </a>
+        <a class="btn ghost" href="https://instagram.com/siryoga.kg" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>
+          @siryoga.kg
+        </a>
+      </div>
+    </div>
+    <!-- МЕСТО ПОД ФОТО: img/hero.jpg (фотосет Алины, фото-1) -->
+    <div class="photo" style="background-image:url('img/hero.jpg')" role="img" aria-label="Сергей, ИИ-йог">
+      <span class="tag">Сергей · Бишкек</span>
+    </div>
+  </div>
+</header>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <img class="about-photo" src="img/about.jpg" alt="Сергей">
+    <div>
+      <div class="eyebrow">Кто я</div>
+      <h2>Разработчик, который ещё и йогу ведёт</h2>
+      <p>Меня зовут Сергей. Больше 10 лет в разработке, и почти всё это время делаю игры. Около трёх лет работал в Moon Active над мобильной Family Island, почти три года писал на C++ The Sandbox Evolution в Pixowl. Сооснователь инди-студии Grimwood Team, наша игра вошла в 11 финалистов Game Development World Championship из 700+ заявок.</p>
+      <p>Сейчас занимаюсь портированием игр на iOS, Android, Nintendo Switch и Xbox. Каждый день работаю с ИИ-агентами и сам собираю под них инструменты, вплоть до собственных MCP-серверов.</p>
+      <p>До игр были серьёзные системы: базы данных и Android-приложения в DMSoft, ПО для ARM-устройств, участие в биллинге «Кыргызгаза» и в системе распределения воды на реке Исфара. Магистр Software Engineering (КРСУ).</p>
+      <p>Ещё веду йогу как <a href="https://instagram.com/siryoga.kg" target="_blank" rel="noopener">Sir Yoga</a>. Подход у меня тот же: без суеты и магии, шаг за шагом, пока не заработает именно у вас.</p>
+      <div class="facts">
+        <div class="fact"><b>10+ лет</b><span>в разработке</span></div>
+        <div class="fact"><b>iOS · Android · Switch</b><span>платформы в портфолио; Steam и Xbox в работе</span></div>
+        <div class="fact"><b>Свой MCP-сервер</b><span>для законов КР</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="directions">
+  <div class="wrap">
+    <div class="eyebrow">Направления</div>
+    <h2>С кем работаю</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Разработчикам</h3>
+        <p class="who">Командам и инди, которые хотят писать код с агентом, а не просто болтать с чат-ботом.</p>
+        <ul>
+          <li>Настройка Claude Code и рабочей среды</li>
+          <li>ИИ-агенты, правила проекта, субагенты, хуки</li>
+          <li>MCP-серверы под ваши базы, API и документацию</li>
+          <li>Пайплайны для портирования, сборок и рутины</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Креативщикам и малому бизнесу</h3>
+        <p class="who">Музыкантам, фотографам, студиям йоги, мастерам и небольшим командам.</p>
+        <ul>
+          <li>Установка Claude и настройка под ваши задачи, с инструкцией «как с ним работать»</li>
+          <li>Подключение Google Drive, Gmail, Notion, календаря</li>
+          <li>Автоматизация рутины: тексты, переписка, контент, учёт</li>
+          <li>Сценарии под вашу сферу, чтобы пользоваться каждый день</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="packages">
+  <div class="wrap">
+    <div class="eyebrow">Пакеты</div>
+    <h2>Сколько стоит</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>Старт</h3>
+        <div class="price">4 500 <small>сом · ≈ $50</small></div>
+        <div class="meta">≈ 2 часа, встреча или онлайн</div>
+        <ul>
+          <li>Установка Claude / Claude Code</li>
+          <li>Настройка проекта и инструкций ИИ под вашу сферу</li>
+          <li>3–5 готовых сценариев-модулей, которые остаются у вас</li>
+        </ul>
+        <a class="btn ghost" href="https://t.me/siryogakg" target="_blank" rel="noopener">Записаться</a>
+      </div>
+      <div class="card featured">
+        <h3>Под ключ</h3>
+        <div class="price"><small>от</small> 12 000 <small>сом · ≈ $140</small></div>
+        <div class="meta">Всё из «Старта», плюс:</div>
+        <ul>
+          <li>Настройка проектов и инструкций под вас</li>
+          <li>Подключение сервисов: Drive, Gmail, Notion</li>
+          <li>2–3 автоматизации вашей рутины</li>
+          <li>Неделя поддержки в Telegram</li>
+        </ul>
+        <a class="btn" href="https://t.me/siryogakg" target="_blank" rel="noopener">Обсудить задачу</a>
+      </div>
+      <div class="card">
+        <h3>Для компаний</h3>
+        <div class="price" style="font-size:1.5rem">Договорная</div>
+        <div class="meta">Открыт к сотрудничеству и долгим проектам</div>
+        <ul>
+          <li>Разработка и внедрение ИИ под ваши процессы</li>
+          <li>Интеграции с вашими системами и данными</li>
+          <li>Документация и инструктаж команды</li>
+          <li>Сопровождение помесячно</li>
+        </ul>
+        <a class="btn ghost" href="https://t.me/siryogakg" target="_blank" rel="noopener">Обсудить сотрудничество</a>
+      </div>
+    </div>
+    <p class="note">Начните со «Старта»: поставим Claude и попробуем на ваших задачах. Захотите больше — продолжим в «Под ключ», а 4 500 сом за «Старт» пойдут в зачёт (если в течение 2 недель).</p>
+    <p class="note">Точная цена зависит от задачи. Напишите, что хотите автоматизировать, и я предложу формат. Оплата в сомах, сумма в долларах примерная.</p>
+  </div>
+</section>
+
+<section class="alt" id="cases">
+  <div class="wrap">
+    <div class="eyebrow">Кейсы</div>
+    <h2>Что уже сделано</h2>
+    <div class="grid2">
+      <div class="card case wide">
+        <div class="label">Торговля и переработка рыбы · Бишкек + Алматы</div>
+        <h3>От кривого Excel к рабочей системе учёта за один вечер</h3>
+        <p>Весь учёт у предпринимателя жил в Excel на 11 листов. Проверили книгу целиком, исправили ошибки в формулах и превратили таблицу в систему, которой удобно пользоваться каждый день.</p>
+        <ul>
+          <li>Пересобрали книгу: зоны хранения, себестоимость по средней цене прихода, контроль ошибок в каждой строке</li>
+          <li>Добавили второй город и тенге с курсом на дату продажи, долги клиентов, сроки годности, «пора заказать»</li>
+          <li>Сделали отдельный учёт переработки (копчение, вялка, филе): выход, потери, рейтинг поставщиков</li>
+          <li>Собрали онлайн-приложение для телефона со сканером штрих-кодов и накладными</li>
+        </ul>
+        <p class="who">Около двух часов работы. В конце клиент получил пакет, чтобы продолжать самостоятельно со своим Claude.</p>
+      </div>
+      <div class="card case">
+        <div class="label">Разработка игр</div>
+        <h3>ИИ-среда для портирования игр</h3>
+        <p>Настроил агентов и рабочее окружение для портирования игр на iOS, Android и Nintendo Switch: правила проекта, инструменты, повторяемые сценарии сборки. Версии для PC (Steam) и Xbox сейчас в работе.</p>
+      </div>
+      <div class="card case">
+        <div class="label">Право · свой MCP-сервер</div>
+        <h3>ИИ-юрист по законам Кыргызстана</h3>
+        <p>Собственная система, в которой Claude отвечает со ссылками на конкретные статьи и редакцию на нужную дату. Ссылки и цитаты проверяются, поэтому выдуманных статей нет.</p>
+        <ul>
+          <li>109 актов со всеми редакциями, около 43 тыс. фрагментов норм</li>
+          <li>19 инструментов: норма на дату, сравнение редакций, ставки, курсы НБКР</li>
+          <li>Работает с компьютера, телефона и в Telegram; база сверяется с Минюстом каждую неделю</li>
+        </ul>
+      </div>
+      <div class="card case">
+        <div class="label">Экология · госэкспертиза</div>
+        <h3>Эксперту-экологу: заключения со ссылками на нормы</h3>
+        <p>Система распознаёт сканы проекта, постранично сверяет их с законами и санправилами и собирает черновик заключения из одобренных шаблонов.</p>
+        <ul>
+          <li>72 страницы сканов → заключение с 17 замечаниями</li>
+          <li>Перед отдачей независимая проверка отсеивает ложные замечания</li>
+          <li>Нормы ПДК и методики уже в базе, ничего не ищется вручную</li>
+        </ul>
+      </div>
+      <div class="card case">
+        <div class="label">Музыка</div>
+        <h3>Музыкант: ИИ в творчестве и соцсетях</h3>
+        <p>Установил Claude и Claude Code, показал, как применять их в работе над музыкой, и автоматизировал ведение Instagram.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">Как это проходит</div>
+    <h2>Три шага</h2>
+    <div class="steps">
+      <div class="step"><h3>Знакомство</h3><p>Пишете в Telegram, чем занимаетесь и что отнимает время. Обсуждаем задачу в переписке, а если нужно, коротко созваниваемся. Это бесплатно.</p></div>
+      <div class="step"><h3>Встреча и настройка</h3><p>Личная встреча или полноценный созвон: ставлю и настраиваю всё на ваших задачах и данных и сразу показываю, как этим пользоваться.</p></div>
+      <div class="step"><h3>Готовое решение</h3><p>Получаете настроенную систему с документацией и гарантией. Работаю официально как ИП: договор, чек, акт.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="wrap">
+    <h2>Давайте настроим</h2>
+    <p>Напишите в Telegram, что хотите отдать ИИ. Отвечу и подскажу, с чего начать.</p>
+    <div class="btns">
+      <a class="btn" href="https://t.me/siryogakg" target="_blank" rel="noopener">Telegram</a>
+      <a class="btn ghost" href="https://instagram.com/siryoga.kg" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Salvicode · Сергей, Бишкек</span>
+    <span>ИИ-йог · <a href="https://instagram.com/siryoga.kg" target="_blank" rel="noopener">Sir Yoga</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
